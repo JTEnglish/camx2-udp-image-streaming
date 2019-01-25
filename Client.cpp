@@ -47,9 +47,9 @@ int main(int argc, char * argv[]) {
         Mat frame, send;
         vector < uchar > encoded;
         VideoCapture cap(0); // Grab the camera
-        namedWindow("send", CV_WINDOW_AUTOSIZE);
+        
         if (!cap.isOpened()) {
-            cerr << "OpenCV Failed to open camera";
+            cerr << "OpenCV Failed to open camera\n";
             exit(1);
         }
 
@@ -63,7 +63,7 @@ int main(int argc, char * argv[]) {
             compression_params.push_back(jpegqual);
 
             imencode(".jpg", send, encoded, compression_params);
-            imshow("send", send);
+            
             int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
 
             int ibuf[1];
@@ -72,8 +72,6 @@ int main(int argc, char * argv[]) {
 
             for (int i = 0; i < total_pack; i++)
                 sock.sendTo( & encoded[i * PACK_SIZE], PACK_SIZE, servAddress, servPort);
-
-            waitKey(FRAME_INTERVAL);
 
             clock_t next_cycle = clock();
             double duration = (next_cycle - last_cycle) / (double) CLOCKS_PER_SEC;
