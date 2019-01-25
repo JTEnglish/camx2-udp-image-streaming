@@ -18,16 +18,18 @@
  *   Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
+/*
+ *  Project: Cam x2 UDP Image Streaming
+ *  File: Client.cpp
+ */
+
 #include "PracticalSocket.h"      // For UDPSocket and SocketException
 #include <iostream>               // For cout and cerr
-#include <cstdlib>                // For atoi()
-
-using namespace std;
-
 #include "opencv2/opencv.hpp"
-using namespace cv;
 #include "config.h"
 
+using namespace std;
+using namespace cv;
 
 int main(int argc, char * argv[]) {
     if ((argc < 3) || (argc > 3)) { // Test for correct number of arguments
