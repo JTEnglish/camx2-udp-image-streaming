@@ -44,25 +44,38 @@ int main(int argc, char * argv[]) {
         UDPSocket sock;
         int jpegqual =  ENCODE_QUALITY; // Compression Parameter
 
-        Mat frame, send;
+        Mat frame0, send0;
+        Mat frame1, send1;
+        Mat send_final;
         vector < uchar > encoded;
-        VideoCapture cap(0); // Grab the camera
+
+        VideoCapture cap0(0); // Grab the camera
+        VideoCapture cap1(1); // Grab the camera
         
-        if (!cap.isOpened()) {
+        if (!cap0.isOpened() || !cap1.isOpened()) {
             cerr << "OpenCV Failed to open camera\n";
             exit(1);
         }
 
         clock_t last_cycle = clock();
         while (1) {
-            cap >> frame;
-            if(frame.size().width==0)continue;//simple integrity check; skip erroneous data...
-            resize(frame, send, Size(FRAME_WIDTH, FRAME_HEIGHT), 0, 0, INTER_LINEAR);
+            cap0 >> frame0;
+            cap1 >> frame1;
+
+            if(frame0.size().width==0 || frame1.size().width==0)
+                continue;//simple integrity check; skip erroneous data...
+
+            resize(frame0, send0, Size(FRAME_WIDTH, FRAME_HEIGHT), 0, 0, INTER_LINEAR);
+            resize(frame1, send1, Size(FRAME_WIDTH, FRAME_HEIGHT), 0, 0, INTER_LINEAR);
+            
             vector < int > compression_params;
             compression_params.push_back(CV_IMWRITE_JPEG_QUALITY);
             compression_params.push_back(jpegqual);
 
-            imencode(".jpg", send, encoded, compression_params);
+            Mat matArray[] = { send0, send1 };
+            hconcat(matArray, 2, send_final);
+
+            imencode(".jpg", send_final, encoded, compression_params);
             
             int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
 
