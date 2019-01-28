@@ -75,7 +75,7 @@ int main(int argc, char * argv[]) {
             Mat matArray[] = { send0, send1 };
             hconcat(matArray, 2, send_final);
 
-            imencode(".jpg", send_final, encoded, compression_params);
+            imencode(ENCODE_FILE_EXT, send_final, encoded, compression_params);
             
             int total_pack = 1 + (encoded.size() - 1) / PACK_SIZE;
 
